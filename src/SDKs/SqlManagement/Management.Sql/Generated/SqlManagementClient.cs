@@ -212,6 +212,21 @@ namespace Microsoft.Azure.Management.Sql
         public virtual IDatabaseUsagesOperations DatabaseUsages { get; private set; }
 
         /// <summary>
+        /// Gets the IDatabaseAdvisorsOperations.
+        /// </summary>
+        public virtual IDatabaseAdvisorsOperations DatabaseAdvisors { get; private set; }
+
+        /// <summary>
+        /// Gets the IDatabaseRecommendedActionsOperations.
+        /// </summary>
+        public virtual IDatabaseRecommendedActionsOperations DatabaseRecommendedActions { get; private set; }
+
+        /// <summary>
+        /// Gets the IServerAdvisorsOperations.
+        /// </summary>
+        public virtual IServerAdvisorsOperations ServerAdvisors { get; private set; }
+
+        /// <summary>
         /// Gets the IDatabaseBlobAuditingPoliciesOperations.
         /// </summary>
         public virtual IDatabaseBlobAuditingPoliciesOperations DatabaseBlobAuditingPolicies { get; private set; }
@@ -230,6 +245,21 @@ namespace Microsoft.Azure.Management.Sql
         /// Gets the IServerKeysOperations.
         /// </summary>
         public virtual IServerKeysOperations ServerKeys { get; private set; }
+
+        /// <summary>
+        /// Gets the ISyncAgentsOperations.
+        /// </summary>
+        public virtual ISyncAgentsOperations SyncAgents { get; private set; }
+
+        /// <summary>
+        /// Gets the ISyncGroupsOperations.
+        /// </summary>
+        public virtual ISyncGroupsOperations SyncGroups { get; private set; }
+
+        /// <summary>
+        /// Gets the ISyncMembersOperations.
+        /// </summary>
+        public virtual ISyncMembersOperations SyncMembers { get; private set; }
 
         /// <summary>
         /// Gets the IVirtualNetworkRulesOperations.
@@ -465,10 +495,16 @@ namespace Microsoft.Azure.Management.Sql
             TransparentDataEncryptionActivities = new TransparentDataEncryptionActivitiesOperations(this);
             ServerUsages = new ServerUsagesOperations(this);
             DatabaseUsages = new DatabaseUsagesOperations(this);
+            DatabaseAdvisors = new DatabaseAdvisorsOperations(this);
+            DatabaseRecommendedActions = new DatabaseRecommendedActionsOperations(this);
+            ServerAdvisors = new ServerAdvisorsOperations(this);
             DatabaseBlobAuditingPolicies = new DatabaseBlobAuditingPoliciesOperations(this);
             EncryptionProtectors = new EncryptionProtectorsOperations(this);
             FailoverGroups = new FailoverGroupsOperations(this);
             ServerKeys = new ServerKeysOperations(this);
+            SyncAgents = new SyncAgentsOperations(this);
+            SyncGroups = new SyncGroupsOperations(this);
+            SyncMembers = new SyncMembersOperations(this);
             VirtualNetworkRules = new VirtualNetworkRulesOperations(this);
             BaseUri = new System.Uri("https://management.azure.com");
             AcceptLanguage = "en-US";

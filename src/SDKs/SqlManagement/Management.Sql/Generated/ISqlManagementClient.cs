@@ -207,6 +207,21 @@ namespace Microsoft.Azure.Management.Sql
         IDatabaseUsagesOperations DatabaseUsages { get; }
 
         /// <summary>
+        /// Gets the IDatabaseAdvisorsOperations.
+        /// </summary>
+        IDatabaseAdvisorsOperations DatabaseAdvisors { get; }
+
+        /// <summary>
+        /// Gets the IDatabaseRecommendedActionsOperations.
+        /// </summary>
+        IDatabaseRecommendedActionsOperations DatabaseRecommendedActions { get; }
+
+        /// <summary>
+        /// Gets the IServerAdvisorsOperations.
+        /// </summary>
+        IServerAdvisorsOperations ServerAdvisors { get; }
+
+        /// <summary>
         /// Gets the IDatabaseBlobAuditingPoliciesOperations.
         /// </summary>
         IDatabaseBlobAuditingPoliciesOperations DatabaseBlobAuditingPolicies { get; }
@@ -225,6 +240,21 @@ namespace Microsoft.Azure.Management.Sql
         /// Gets the IServerKeysOperations.
         /// </summary>
         IServerKeysOperations ServerKeys { get; }
+
+        /// <summary>
+        /// Gets the ISyncAgentsOperations.
+        /// </summary>
+        ISyncAgentsOperations SyncAgents { get; }
+
+        /// <summary>
+        /// Gets the ISyncGroupsOperations.
+        /// </summary>
+        ISyncGroupsOperations SyncGroups { get; }
+
+        /// <summary>
+        /// Gets the ISyncMembersOperations.
+        /// </summary>
+        ISyncMembersOperations SyncMembers { get; }
 
         /// <summary>
         /// Gets the IVirtualNetworkRulesOperations.
