@@ -1,9 +1,9 @@
-2017-08-07 06:28:43 UTC
+2017-08-08 03:58:59 UTC
 
 1) azure-rest-api-specs repository information
 GitHub user: ScottHolden
 Branch:      current
-Commit:      6d08a94fe9e2e172109027139fedd81658cf57a5
+Commit:      6a3a4425015672592d40201e3742c260bdf29a72
 
 2) AutoRest information
 Requested version: latest

@@ -207,21 +207,6 @@ namespace Microsoft.Azure.Management.Sql
         IDatabaseUsagesOperations DatabaseUsages { get; }
 
         /// <summary>
-        /// Gets the IDatabaseAdvisorsOperations.
-        /// </summary>
-        IDatabaseAdvisorsOperations DatabaseAdvisors { get; }
-
-        /// <summary>
-        /// Gets the IDatabaseRecommendedActionsOperations.
-        /// </summary>
-        IDatabaseRecommendedActionsOperations DatabaseRecommendedActions { get; }
-
-        /// <summary>
-        /// Gets the IServerAdvisorsOperations.
-        /// </summary>
-        IServerAdvisorsOperations ServerAdvisors { get; }
-
-        /// <summary>
         /// Gets the IDatabaseBlobAuditingPoliciesOperations.
         /// </summary>
         IDatabaseBlobAuditingPoliciesOperations DatabaseBlobAuditingPolicies { get; }
