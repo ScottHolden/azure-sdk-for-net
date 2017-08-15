@@ -6,7 +6,7 @@ using Microsoft.Azure.Management.ResourceManager.Models;
 using Microsoft.Azure.Test.HttpRecorder;
 using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
 
-namespace ContainerInstance.Tests
+namespace EventGrid.Tests
 {
 	class TestContext : IDisposable
 	{
@@ -40,11 +40,11 @@ namespace ContainerInstance.Tests
 			return client;
 		}
 
-		public ResourceGroup CreateResourceGroup(string prefix = DefaultResourceGroupPrefix, string location = DefaultLocationId)
+		public ResourceGroup CreateResourceGroup(string prefix = DefaultResourceGroupPrefix, string location = DefaultLocationId, [CallerMemberName] string methodName = "GenerateName_failed")
 		{
 			ResourceManagementClient resourceClient = GetClient<ResourceManagementClient>();
 
-			string rgName = GenerateName(prefix);
+			string rgName = GenerateName(prefix, methodName);
 			ResourceGroup resourceGroup = resourceClient.ResourceGroups.CreateOrUpdate(rgName,
 				new ResourceGroup
 				{
