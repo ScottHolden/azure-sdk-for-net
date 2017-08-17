@@ -7,6 +7,8 @@ using Microsoft.Azure.Management.ResourceManager.Models;
 using Microsoft.Azure.Management.Storage;
 using Microsoft.Azure.Management.Storage.Models;
 using System;
+using Microsoft.Azure.Management.EventHub;
+using Microsoft.Azure.Management.EventHub.Models;
 
 namespace EventGrid.Tests
 {
@@ -51,28 +53,59 @@ namespace EventGrid.Tests
 		{
 			using (TestContext context = new TestContext(this))
 			{
-				ResourceGroup resourceGroup = context.CreateResourceGroup("eg-eventsub-res-", EventGridLocation);
+				ResourceGroup resourceGroup = context.CreateResourceGroup("eg-eventsub-sto-", EventGridLocation);
 				EventGridManagementClient client = context.GetClient<EventGridManagementClient>();
 				StorageManagementClient storageClient = context.GetClient<StorageManagementClient>();
 
 				// Setup our target resource
-				string storageAccountName = context.GenerateName("egeventsubres");
+				string storageAccountName = context.GenerateName("egeventsubsto");
 				StorageAccount storageAccount = storageClient.StorageAccounts.Create(resourceGroup.Name, storageAccountName, new StorageAccountCreateParameters
 				{
 					Sku = new Microsoft.Azure.Management.Storage.Models.Sku {
-						Name = SkuName.StandardLRS
+						Name = Microsoft.Azure.Management.Storage.Models.SkuName.StandardLRS
 					},
 					AccessTier = AccessTier.Hot,
 					Kind = Kind.BlobStorage,
 					Location = resourceGroup.Location
 				});
 				Assert.NotNull(storageAccount);
+				Assert.NotNull(storageAccount.Id);
 
-				string eventSubscriptionName = context.GenerateName("esreseventsub");
+				string eventSubscriptionName = context.GenerateName("eseventsubsto");
 
 				string scope = storageAccount.Id;
 
 				EventSubscriptionCRUD(client, resourceGroup, eventSubscriptionName, scope, "Microsoft.Storage.StorageAccounts", true, true, true);
+			}
+		}
+
+		[Fact]
+		public void EventSubscriptionCRUDResourceScope_EventHub()
+		{
+			using (TestContext context = new TestContext(this))
+			{
+				ResourceGroup resourceGroup = context.CreateResourceGroup("eg-eventsub-eh-", EventGridLocation);
+				EventGridManagementClient client = context.GetClient<EventGridManagementClient>();
+				EventHubManagementClient eventHubClient = context.GetClient<EventHubManagementClient>();
+
+				// Setup our target resource
+				string namespaceName = context.GenerateName("egeventsubns");
+				EHNamespace eventHubNS = eventHubClient.Namespaces.CreateOrUpdate(resourceGroup.Name, namespaceName, new EHNamespace
+				{
+					Location = resourceGroup.Location,
+					Sku = new Microsoft.Azure.Management.EventHub.Models.Sku
+					{
+						Name = "Basic"
+					}
+				});
+				Assert.NotNull(eventHubNS);
+				Assert.NotNull(eventHubNS.Id);
+
+				string eventSubscriptionName = context.GenerateName("eseventsubeh");
+				
+				string scope = eventHubNS.Id;
+
+				EventSubscriptionCRUD(client, resourceGroup, eventSubscriptionName, scope, "Microsoft.Eventhub.Namespaces", false, true, true);
 			}
 		}
 
@@ -91,10 +124,11 @@ namespace EventGrid.Tests
 					Location = resourceGroup.Location
 				});
 				Assert.NotNull(triggerTopic);
+				Assert.NotNull(triggerTopic.Id);
 
 				string eventSubscriptionName = context.GenerateName("estopeventsub");
 
-				string scope = $"/subscriptions/{client.SubscriptionId}/resourceGroups/{resourceGroup.Name}/providers/Microsoft.EventGrid/topics/{triggerTopicName}";
+				string scope = triggerTopic.Id;
 
 				EventSubscriptionCRUD(client, resourceGroup, eventSubscriptionName, scope, "Microsoft.EventGrid.Topics", false, true, true);
 			}
