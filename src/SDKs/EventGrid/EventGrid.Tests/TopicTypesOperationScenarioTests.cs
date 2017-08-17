@@ -36,16 +36,42 @@ namespace EventGrid.Tests
 		[InlineData("Microsoft.Storage.StorageAccounts")]
 		public void GetTopicTypes(string topicTypeName)
 		{
-			using (TestContext context = new TestContext(this))
+			using (TestContext context = new TestContext(this, nameof(GetTopicTypes) + topicTypeName))
 			{
 				EventGridManagementClient client = context.GetClient<EventGridManagementClient>();
-
+				
 				// Get specific topic type
 				TopicTypeInfo getTopicType = client.TopicTypes.Get(topicTypeName);
 				Assert.NotNull(getTopicType);
 				Assert.NotNull(getTopicType.Name);
 				Assert.NotNull(getTopicType.Type);
 				Assert.NotNull(getTopicType.Provider);
+			}
+		}
+
+		[Theory]
+		[InlineData("Microsoft.Resources.Subscriptions")]
+		[InlineData("Microsoft.Resources.ResourceGroups")]
+		[InlineData("Microsoft.Eventhub.Namespaces")]
+		[InlineData("Microsoft.Storage.StorageAccounts")]
+		public void ListTopicTypeEventTypes(string topicTypeName)
+		{
+			using (TestContext context = new TestContext(this, nameof(ListTopicTypeEventTypes) + topicTypeName))
+			{
+				EventGridManagementClient client = context.GetClient<EventGridManagementClient>();
+
+				// Get specific topic type
+				IEnumerable<EventType> eventTypes = client.TopicTypes.ListEventTypes(topicTypeName);
+				Assert.NotNull(eventTypes);
+				foreach(EventType et in eventTypes)
+				{
+					Assert.NotNull(et);
+					Assert.NotNull(et.Name);
+					Assert.NotNull(et.Type);
+					Assert.NotNull(et.Description);
+					Assert.NotNull(et.DisplayName);
+					Assert.NotNull(et.SchemaUrl);
+				}
 			}
 		}
 	}
