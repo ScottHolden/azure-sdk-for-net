@@ -10,7 +10,7 @@ namespace EventGrid.Tests
 	public class TopicTypesOperationScenarioTests
 	{
 		[Fact]
-		public void ListGetTopicTypes()
+		public void ListTopicTypes()
 		{
 			using (TestContext context = new TestContext(this))
 			{
@@ -26,9 +26,21 @@ namespace EventGrid.Tests
 					Assert.NotNull(topicType.Type);
 					Assert.NotNull(topicType.Provider);
 				}
+			}
+		}
+
+		[Theory]
+		[InlineData("Microsoft.Resources.Subscriptions")]
+		[InlineData("Microsoft.Resources.ResourceGroups")]
+		[InlineData("Microsoft.Eventhub.Namespaces")]
+		[InlineData("Microsoft.Storage.StorageAccounts")]
+		public void GetTopicTypes(string topicTypeName)
+		{
+			using (TestContext context = new TestContext(this))
+			{
+				EventGridManagementClient client = context.GetClient<EventGridManagementClient>();
 
 				// Get specific topic type
-				string topicTypeName = "bob";
 				TopicTypeInfo getTopicType = client.TopicTypes.Get(topicTypeName);
 				Assert.NotNull(getTopicType);
 				Assert.NotNull(getTopicType.Name);
