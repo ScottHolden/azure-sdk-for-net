@@ -9,6 +9,7 @@ using Microsoft.Azure.Management.Storage.Models;
 using System;
 using Microsoft.Azure.Management.EventHub;
 using Microsoft.Azure.Management.EventHub.Models;
+using Microsoft.Rest.Azure;
 
 namespace EventGrid.Tests
 {
@@ -214,9 +215,6 @@ namespace EventGrid.Tests
 					Assert.True((resourceGroupScoped && locationScoped) == regionalEventSubsByResourceGroupAndType.Any(x => eventSubId.Equals(x.Id, StringComparison.OrdinalIgnoreCase)));
 				}
 
-
-				/* Updates are currently broken in the Azure Rest project, https://github.com/Azure/azure-sdk-for-net/issues/3592
-
 				// Update just the destination 
 				string newDestinationEndpoint = "https://requestb.in/109n35e1";
 				EventSubscription updateEventSub = client.EventSubscriptions.Update(scope, eventSubscriptionName, new EventSubscriptionUpdateParameters
@@ -237,23 +235,20 @@ namespace EventGrid.Tests
 				Assert.Equal(newDestinationEndpoint, updateEventSub.Destination.EndpointBaseUrl);
 
 				// Update the event subscription with a filter
-				string subjectBeginsWithFilter = "newFilter";
-				bool isSubjectCaseSensitive = false;
+				string subjectEndsWithFilter = "newFilter";
 				string singleEventType = AllIncludedEventType;
 				EventSubscription updateFilteredEventSub = client.EventSubscriptions.Update(scope, eventSubscriptionName, new EventSubscriptionUpdateParameters
 				{
 					Filter = new EventSubscriptionFilter
 					{
-						IsSubjectCaseSensitive = isSubjectCaseSensitive,
 						IncludedEventTypes = new List<string> { singleEventType },
-						SubjectBeginsWith = subjectBeginsWithFilter
+						SubjectEndsWith = subjectEndsWithFilter // Can only update ends with
 					}
 				});
 				Assert.NotNull(updateFilteredEventSub);
 				Assert.NotNull(updateFilteredEventSub.Filter);
-				Assert.Equal(isSubjectCaseSensitive, updateFilteredEventSub.Filter.IsSubjectCaseSensitive);
 				Assert.Equal(singleEventType, updateFilteredEventSub.Filter.IncludedEventTypes.Single());
-				Assert.Equal(subjectBeginsWithFilter, updateFilteredEventSub.Filter.SubjectBeginsWith);
+				Assert.Equal(subjectEndsWithFilter, updateFilteredEventSub.Filter.SubjectEndsWith);
 				Assert.NotNull(updateFilteredEventSub.Destination);
 				Assert.Equal(destinationEndpointType, updateFilteredEventSub.Destination.EndpointType);
 				Assert.Equal(newDestinationEndpoint, updateFilteredEventSub.Destination.EndpointBaseUrl);
@@ -263,25 +258,17 @@ namespace EventGrid.Tests
 				EventSubscription getFilteredEventSub = client.EventSubscriptions.Get(scope, eventSubscriptionName);
 				Assert.NotNull(getFilteredEventSub);
 				Assert.NotNull(getFilteredEventSub.Filter);
-				Assert.Equal(isSubjectCaseSensitive, getFilteredEventSub.Filter.IsSubjectCaseSensitive);
 				Assert.Equal(singleEventType, getFilteredEventSub.Filter.IncludedEventTypes.Single());
-				Assert.Equal(subjectBeginsWithFilter, getFilteredEventSub.Filter.SubjectBeginsWith);
+				Assert.Equal(subjectEndsWithFilter, getFilteredEventSub.Filter.SubjectEndsWith);
 				Assert.NotNull(getFilteredEventSub.Destination);
 				Assert.Equal(destinationEndpointType, getFilteredEventSub.Destination.EndpointType);
-				Assert.Equal(originalDestinationEndpoint, getFilteredEventSub.Destination.EndpointBaseUrl);
+				Assert.Equal(newDestinationEndpoint, getFilteredEventSub.Destination.EndpointBaseUrl);
 
-				// Do a dummy update with no payload to make sure nothing changes
-				EventSubscription emptyUpdateEventSub = client.EventSubscriptions.Update(scope, eventSubscriptionName, new EventSubscriptionUpdateParameters());
-				Assert.NotNull(emptyUpdateEventSub);
-				Assert.NotNull(emptyUpdateEventSub.Filter);
-				Assert.Equal(isSubjectCaseSensitive, emptyUpdateEventSub.Filter.IsSubjectCaseSensitive);
-				Assert.Equal(singleEventType, emptyUpdateEventSub.Filter.IncludedEventTypes.Single());
-				Assert.Equal(subjectBeginsWithFilter, emptyUpdateEventSub.Filter.SubjectBeginsWith);
-				Assert.NotNull(emptyUpdateEventSub.Destination);
-				Assert.Equal(destinationEndpointType, emptyUpdateEventSub.Destination.EndpointType);
-				Assert.Equal(originalDestinationEndpoint, emptyUpdateEventSub.Destination.EndpointBaseUrl);
-
-				*/
+				// Do a dummy update with no payload to make sure it throws
+				Assert.Throws<CloudException>(() =>
+				{
+					client.EventSubscriptions.Update(scope, eventSubscriptionName, new EventSubscriptionUpdateParameters());
+				});
 
 				// Get the full url
 				EventSubscriptionFullUrl fullUrl = client.EventSubscriptions.GetFullUrl(scope, eventSubscriptionName);
